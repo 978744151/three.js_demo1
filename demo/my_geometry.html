@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            height: 600px;
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+
+
+<body onload="threeStart()">
+
+
+<div style="margin-left:150px;">
+    <p>课前准备，绘制一个立方体和一个网格线</p>
+</div>
+<div id="canvas-frame"></div>
+<script src="../build/three.min.js"></script>
+<script src="../examples/js/libs/stats.min.js"></script>
+<script src="../examples/js/libs/tween.min.js"></script>
+<script>
+    var renderer;
+    var stats;
+    function initThree(){
+        width = document.getElementById("canvas-frame").clientWidth;
+        height = document.getElementById("canvas-frame").clientHeight;
+        renderer = new THREE.WebGLRenderer({
+            antialias : true
+        });
+        renderer.setSize(width, height);
+        document.getElementById("canvas-frame").appendChild(renderer.domElement)//把花布添加进去
+        renderer.setClearColor(0xFFFFFF, 1.0);
+
+//        stats = new Stats();
+//        stats.domElement.style.left = "0px";
+//        stats.domElement.style.top = "0px";
+//        document.getElementById("canvas-frame").appendChild(state.domElement);
+    }
+    //初始化相机
+    var camera;
+    function initCamera(){
+        camera = new THREE.PerspectiveCamera(45, width/height,1, 10000);
+        camera.position.x = 100;
+        camera.position.y = 500;
+        camear.position.z = 1000;
+        camear.up.x = 0;
+        camear.up.y = 1;
+        camear.up.z = 0;
+        camera.lookAt(1,0,0)
+    }
+    var scene;
+    function inintScene() {
+        scene = new THREE.Scene();
+    }
+    //初始化灯源
+    var light;
+    function initLight(){
+        light = new THREE.AmbientLight("#FFB6C1");
+        light.position.set(200,200,200);
+        scene.add(light);
+    }
+    var cube;//立方
+    var mesh;//网丝
+    function initObject() {
+        var geometry =new THREE.BoxGeometry(100,100,100);
+        for(var i =0; i< geometry.faces.length;i += 2){
+            var hex = Math.random() * 0xffffff;
+            geometry.faces[ i ].color.setHex( hex );
+            geometry.faces[ i + 1 ].color.setHex( hex );
+            geometry2.faces[ i ].color.setHex( hex );
+            geometry2.faces[ i + 1 ].color.setHex( hex );
+        }
+        var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors} );
+        mesh = new THREE.Mesh( geometry,material);
+        mesh.position = new THREE.Vector3(0,0,0);
+        scene.add(mesh);
+    }
+    function initGrid(){
+        var helper = new THREE.GridHelper( 1000, 50 );//生成了一个网格模型，边长为1000，大网格中有小网格，小网格的边长是50.
+        helper.setColors( "	#FFC0CB", "	#0000FF");
+        //网格线的颜色一头是0x0000ff，另一头是0x808080。线段中间的颜色取这两个颜色的插值颜色。
+        scene.add( helper );
+    }
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+
+
+        initObject();
+        initGrid();
+
+        animation();
+
+    }
+
+    // 帧循环、游戏循环
+    function animation()
+    {
+        mesh.rotation.z +=0.01;//可以让页面进行自动进行动画
+        renderer.render(scene, camera);
+        requestAnimationFrame(animation);
+
+    }
+</script>
+
+</body>
+</html>
